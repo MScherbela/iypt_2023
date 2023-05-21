@@ -40,7 +40,7 @@ def build_state_matrix_and_inhom(R, phi, R_dot, phi_dot, p: ModelParams):
     radius = jnp.array([p.r1, p.r1, p.r2, p.r2])
     e_centrifugal = jnp.array([s, -c, s, -c])
     e_fric = jnp.tile(jnp.sign(R_dot), 2)
-    e_fric *= jnp.array([0.4, 1, 0.2, 0.5])
+    e_fric *= jnp.array([10, 10, 5, 5])
     #e_fric = jnp.tile(jnp.tanh(R_dot / 0.1), 2)
     e_gravity = jnp.array([0, 1, 0, 1])
 
