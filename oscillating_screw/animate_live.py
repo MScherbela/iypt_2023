@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from simulation import get_screw_params, simulate
 
 params = get_screw_params(
-    length=5, diameter=0.8, head_diameter=6, head_thickness=0.2, mu=0.4, mu_roll=0.0, alpha=np.radians(25)
+    length=5, diameter=0.8, head_diameter=3, head_thickness=0.2, mu=0.30, mu_roll=0.005, alpha=np.radians(30)
 )
 
 
@@ -21,13 +21,13 @@ x2 = R_values + np.stack([np.sin(phi_values), -np.cos(phi_values)], axis=1) * (p
 
 
 fig, ax = plt.subplots(figsize=(17, 5))
-n_skip = 20
+n_skip = 40
 fontsize = 16
 
 ax.plot(x1[0::n_skip, 1], x1[0::n_skip, 0], color="C0", alpha=0.3)
 ax.plot(x2[0::n_skip, 1], x2[0::n_skip, 0], color="C1", alpha=0.3)
-(marker1,) = plt.plot([], [], marker="o", markersize=10, color="C0")
-(marker2,) = plt.plot([], [], marker="o", markersize=20, color="C1")
+(marker1,) = plt.plot([], [], marker="o", markersize=5, color="C0")
+(marker2,) = plt.plot([], [], marker="o", markersize=10, color="C1")
 (connection,) = plt.plot([], [], color="k")
 text = ax.text(0.02, 0.9, "", transform=ax.transAxes, fontsize=fontsize)
 ax.axis("equal")

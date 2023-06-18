@@ -56,7 +56,8 @@ def get_acceleration(R, phi, theta, R_dot, phi_dot, theta_dot, p: ModelParams):
     distances = jnp.array([p.s1, p.s2])
 
     v_rolling = radii * theta_dot
-    v_slip_parallel = R_dot_moving_frame[0]  + (distances - p.sc) * phi_dot - v_rolling
+    v_parallel = R_dot_moving_frame[0]  + (distances - p.sc) * phi_dot
+    v_slip_parallel =  v_parallel - v_rolling
     v_slip_normal = R_dot_moving_frame[1]
 
     F_normal = p.M * p.g * jnp.cos(p.alpha) * (distances[::-1] - p.sc) / (distances[::-1] - distances)
@@ -64,12 +65,13 @@ def get_acceleration(R, phi, theta, R_dot, phi_dot, theta_dot, p: ModelParams):
     sign_func = lambda x: jnp.sign(x)
     F_fric_parallel = -p.mu * F_normal * sign_func(v_slip_parallel)
     F_fric_normal = -p.mu * F_normal * sign_func(v_slip_normal)
+    F_fric_rolling = -p.mu_roll * F_normal * sign_func(v_parallel)
 
     theta_acc = -jnp.dot(F_fric_parallel, radii) / p.I_theta
-    theta_acc -= p.mu_roll * theta_dot
-    phi_acc = jnp.dot(F_fric_parallel, distances - p.sc) / p.I_phi
+    # theta_acc -= p.mu_roll * theta_dot
+    phi_acc = jnp.dot(F_fric_parallel + F_fric_rolling, distances - p.sc) / p.I_phi
 
-    F_fric_total_in_moving_frame = jnp.array([jnp.sum(F_fric_parallel), jnp.sum(F_fric_normal)])
+    F_fric_total_in_moving_frame = jnp.array([jnp.sum(F_fric_parallel + F_fric_rolling), jnp.sum(F_fric_normal)])
     R_acc = p.g * jnp.sin(p.alpha) * np.array([0, -1]) + U @ F_fric_total_in_moving_frame / p.M
     return R_acc, phi_acc, theta_acc
 
