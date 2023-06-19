@@ -4,6 +4,7 @@ import jax
 import jax.numpy as jnp
 import chex
 import matplotlib.pyplot as plt
+from collections import namedtuple
 
 
 @chex.dataclass
@@ -21,6 +22,7 @@ class ModelParams:
     mu_roll: float
     g: float = 981.0
 
+SimulationResults = namedtuple("SimulationResults", ["t", "R", "phi", "theta", "R_dot", "phi_dot", "theta_dot"])
 
 def get_screw_params(length, diameter, head_diameter, head_thickness, density=7.85, **kwargs):
     M_screw = density * np.pi * (diameter / 2) ** 2 * length
@@ -122,5 +124,11 @@ def simulate(params, phi_init_deg=120, dt=2e-4, t_end=2.5):
             dt,
             params,
         )
-    return t_values, R_values, phi_values, theta_values, R_dot_values, phi_dot_values, theta_dot_values
+    return SimulationResults(t_values, R_values, phi_values, theta_values, R_dot_values, phi_dot_values, theta_dot_values)
+
+def get_screw_endpoints(R, phi, p: ModelParams):
+    x1 = R + np.stack([np.sin(phi), -np.cos(phi)], axis=1) * (p.s1 - p.sc)
+    x2 = R + np.stack([np.sin(phi), -np.cos(phi)], axis=1) * (p.s2 - p.sc)
+    return x1, x2
+
 
