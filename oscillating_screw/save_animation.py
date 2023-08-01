@@ -4,14 +4,15 @@ import matplotlib.pyplot as plt
 from simulation import get_screw_params, simulate
 from matplotlib.animation import FuncAnimation
 
+# alpha_in_deg = 21
 params = get_screw_params(
-    length=5, diameter=0.8, head_diameter=6, head_thickness=0.2, mu=0.4, mu_roll=0.0, alpha=np.radians(25)
+    length=6, diameter=0.8, head_diameter=4, head_thickness=0.2, mu=0.25, mu_roll=0.01, alpha=0.21
 )
 
 
 dt = 1e-3
-t_end = 2.0
-phi_init_deg = 120
+t_end = 5.0
+phi_init_deg = 135
 
 t_values, R_values, phi_values, theta_values, R_dot_values, phi_dot_values, theta_dot_values = simulate(
     params, phi_init_deg, dt, t_end
@@ -36,13 +37,13 @@ ax.plot(x2[0::n_skip, 1], x2[0::n_skip, 0], color="C1", alpha=0.3)
 (connection,) = plt.plot([], [], color="k")
 text = ax.text(0.02, 0.9, "", transform=ax.transAxes, fontsize=fontsize)
 
-ax.axis("equal")
+# ax.axis("equal")
 ax.invert_xaxis()
 ax.set_xlabel("Position along the ramp / cm", fontsize=fontsize)
 ax.set_ylabel("Position across the ramp / cm", fontsize=fontsize)
 ax.tick_params(labelsize=fontsize)
 
-
+#%%
 def run_animation(i):
     marker1.set_data([x1[i, 1]], [x1[i, 0]])
     marker2.set_data([x2[i, 1]], [x2[i, 0]])
