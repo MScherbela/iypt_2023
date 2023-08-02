@@ -62,7 +62,10 @@ def get_acceleration(R, phi, theta, R_dot, phi_dot, theta_dot, p: ModelParams):
     v_slip_parallel =  v_parallel - v_rolling
     v_slip_normal = R_dot_moving_frame[1]
 
-    F_normal = p.M * p.g * jnp.cos(p.alpha) * (distances[::-1] - p.sc) / (distances[::-1] - distances)
+    l1_plus_l2 = distances[1]
+    # F_normal = p.M * p.g * jnp.cos(p.alpha) * (distances[::-1] - p.sc) / l1_plus_l2
+    F_normal = p.M * p.g * jnp.cos(p.alpha) * jnp.abs(distances[::-1] - p.sc) / l1_plus_l2
+
 
     sign_func = lambda x: jnp.sign(x)
     F_fric_parallel = -p.mu * F_normal * sign_func(v_slip_parallel)
@@ -131,4 +134,23 @@ def get_screw_endpoints(R, phi, p: ModelParams):
     x2 = R + np.stack([np.sin(phi), -np.cos(phi)], axis=1) * (p.s2 - p.sc)
     return x1, x2
 
+if __name__ == '__main__':
+    params = get_screw_params(
+    length=6, 
+    diameter=0.8,
+    head_diameter=4,
+    head_thickness=0.2,
+    mu=0.2,
+    mu_roll=0.01,
+    alpha=np.radians(18)
+)
+
+
+    dt = 1e-3
+    t_end = 3.0
+    phi_init_deg = 135
+
+    t_values, R_values, phi_values, theta_values, R_dot_values, phi_dot_values, theta_dot_values = simulate(
+        params, phi_init_deg, dt, t_end
+    )
 
