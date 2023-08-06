@@ -16,7 +16,7 @@ dt = 1e-3
 t_end = 4.0
 phi_init_deg = 120
 
-n_phi, n_alpha = 30, 30
+n_phi, n_alpha = 6, 6
 phi_init_values = np.linspace(0, 175, n_phi)
 alpha_values = np.linspace(8, 18, n_alpha)
 
@@ -62,7 +62,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.cm as cm
 
-save_figs = True
+save_figs = False
 
 df = pd.read_excel("data/experiment_phi_vs_alpha_phase_diagram.xlsx", header=0)
 phi_values_experiment = df["phi"].values
